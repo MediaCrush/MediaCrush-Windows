@@ -68,7 +68,7 @@ namespace MediaCrushWindows
 
         private static void CaptureScreenshot()
         {
-            Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
+            UploadWindow.Dispatcher.Invoke(new Action(() =>
             {
                 var screen = CaptureVirtualScreen(); // Capture the screen as it appears the moment they press the key combo
                 var tool = new ScreenCapture(screen);
@@ -116,7 +116,11 @@ namespace MediaCrushWindows
                     if (number == Keys.LControlKey || number == Keys.RControlKey || number == Keys.Control || number == Keys.ControlKey)
                         ControlPressed = false;
                     else if (number == Keys.PrintScreen && ControlPressed)
-                        CaptureScreenshot();
+                    {
+                        var thread = new Thread(new ThreadStart(CaptureScreenshot));
+                        thread.SetApartmentState(ApartmentState.STA);
+                        thread.Start();
+                    }
                 }
             }
             return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);

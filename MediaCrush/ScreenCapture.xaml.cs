@@ -8,13 +8,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using SystemInformation = System.Windows.Forms.SystemInformation;
+using Point = System.Windows.Point;
 
 namespace MediaCrush
 {
@@ -25,6 +25,7 @@ namespace MediaCrush
     {
         private bool CaptureStarted = false;
         public Rect Selection { get { return foregroundRectangle.Rect; } }
+        private Point SelectionStart;
 
         public ScreenCapture(Bitmap source)
         {
@@ -34,7 +35,6 @@ namespace MediaCrush
             Width = SystemInformation.VirtualScreen.Width;
             Height = SystemInformation.VirtualScreen.Height;
             backgroundRectangle.Rect = new Rect(0, 0, Width, Height);
-            foregroundRectangle.Rect = new Rect(0, 0, 1, 1); // Try to get it to render, speeds things up
             Background = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(source.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
             KeyDown += ScreenCapture_KeyDown;
         }
@@ -53,16 +53,24 @@ namespace MediaCrush
             var position = e.GetPosition(this);
             if (CaptureStarted)
             {
-                foregroundRectangle.Rect = new Rect(foregroundRectangle.Rect.X, foregroundRectangle.Rect.Y,
-                    position.X - foregroundRectangle.Rect.X, position.Y - foregroundRectangle.Rect.Y);
+                double x = SelectionStart.X;
+                double y = SelectionStart.Y;
+                double width = position.X - SelectionStart.X;
+                double height = position.Y - SelectionStart.Y;
+                if (width < 0) { x += width; width = Math.Abs(width); }
+                if (height < 0) { y += height; height = Math.Abs(height); }
+                foregroundRectangle.Rect = new Rect(x, y, width, height);
             }
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (CaptureStarted)
+                return;
             CaptureStarted = true;
             var position = e.GetPosition(this);
-            foregroundRectangle.Rect = new Rect(position.X, position.Y, 0, 0);
+            SelectionStart = new Point(position.X, position.Y);
+            Window_MouseMove(sender, e);
         }
 
         private void Window_MouseUp(object sender, MouseButtonEventArgs e)
