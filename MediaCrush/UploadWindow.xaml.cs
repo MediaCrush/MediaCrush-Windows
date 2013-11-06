@@ -82,6 +82,7 @@ namespace MediaCrush
                 rowExpand.Height = new GridLength(5, GridUnitType.Star);
                 uploadingFilesContainer.Visibility = Visibility.Visible;
                 uploadingFiles.ItemsSource = FileList;
+                clearButton.Visibility = System.Windows.Visibility.Visible;
             }
             var uploadingFile = new UploadingFile(file);
             FileList.Add(uploadingFile);
@@ -124,6 +125,16 @@ namespace MediaCrush
         private void CopyUrl_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText((sender as MenuItem).Tag as string);
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            FileList.Clear();
+            clearButton.Visibility = System.Windows.Visibility.Collapsed;
+            rowCollapse1.Height = new GridLength(1, GridUnitType.Star);
+            rowCollapse2.Height = new GridLength(1, GridUnitType.Star);
+            rowExpand.Height = new GridLength(0);
+            uploadingFilesContainer.Visibility = Visibility.Collapsed;
         }
     }
 }

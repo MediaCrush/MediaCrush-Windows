@@ -100,6 +100,7 @@
                     </ScrollViewer>
                 </Grid>
                 <Button Width="70" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5" Click="DismissButton_Click">Dismiss</Button>
+                <Button Width="70" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="80 5 5 5" Click="ClearButton_Click" x:Name="clearButton" Visibility="Hidden">Clear</Button>
             </Grid>
         </Border>
     </Grid>
