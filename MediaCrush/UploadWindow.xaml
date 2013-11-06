@@ -1,9 +1,16 @@
 ﻿<Window x:Class="MediaCrush.UploadWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc_c="clr-namespace:MediaCrush.Converters"
         BorderThickness="0" ShowInTaskbar="False" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent" Topmost="True"
         Title="Upload to MediaCrush" Height="500" Width="500">
+    <Window.Resources>
+        <ResourceDictionary>
+            <mc_c:FileStatusToVisibilityConverter x:Key="fileStatusToVisibilityConverter"></mc_c:FileStatusToVisibilityConverter>
+            <mc_c:FileStatusToBooleanConverter x:Key="fileStatusToBooleanConverter"></mc_c:FileStatusToBooleanConverter>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid Background="Transparent">
         <Border Background="White">
             <Grid>
@@ -36,7 +43,8 @@
                             <TextBlock TextWrapping="Wrap" FontSize="14" TextAlignment="Center">MP3 OGG</TextBlock>
                         </StackPanel>
                     </Grid>
-                    <ScrollViewer Grid.Row="3" Visibility="Collapsed" x:Name="uploadingFilesContainer" Padding="5" BorderBrush="Black" BorderThickness="0 1 0 0" Margin="0 0 2 0">
+                    <ScrollViewer Grid.Row="3" Visibility="Collapsed" x:Name="uploadingFilesContainer" Padding="5"
+                                  BorderBrush="Black" BorderThickness="0 1 0 0" Margin="0 0 2 0" VerticalScrollBarVisibility="Auto">
                         <ItemsControl x:Name="uploadingFiles">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -47,6 +55,18 @@
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
                                             <MediaElement Source="{Binding File}" MaxHeight="113" MaxWidth="200" HorizontalAlignment="Left" Volume="0"></MediaElement>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock FontSize="20" Text="{Binding FileName}" FontWeight="Bold"></TextBlock>
+                                                <TextBlock FontSize="16" Text="Uploading..."
+                                                           Visibility="{Binding Status, Converter={StaticResource ResourceKey=fileStatusToVisibilityConverter}, ConverterParameter=Uploading}"></TextBlock>
+                                                <TextBlock FontSize="16" Text="Processing... (this may take a while)"
+                                                           Visibility="{Binding Status, Converter={StaticResource ResourceKey=fileStatusToVisibilityConverter}, ConverterParameter=Processing}"></TextBlock>
+                                                <TextBlock FontSize="16" Text="Upload complete!"
+                                                           Visibility="{Binding Status, Converter={StaticResource ResourceKey=fileStatusToVisibilityConverter}, ConverterParameter=Finished}"></TextBlock>
+                                            </StackPanel>
+                                            <ProgressBar Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Minimum="0" Maximum="1" Value="{Binding Progress}"
+                                                         Visibility="{Binding Status, Converter={StaticResource ResourceKey=fileStatusToVisibilityConverter}, ConverterParameter=!Finished}"
+                                                         IsIndeterminate="{Binding Status, Converter={StaticResource ResourceKey=fileStatusToBooleanConverter}, ConverterParameter=Processing}"></ProgressBar>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
