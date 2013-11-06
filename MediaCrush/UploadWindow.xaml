@@ -81,7 +81,13 @@
                                                 <TextBlock FontSize="16" Text="Upload complete!"
                                                            Visibility="{Binding Status, Converter={StaticResource fileStatusToVisibilityConverter}, ConverterParameter=Finished}"></TextBlock>
                                                 <Button Style="{StaticResource LinkButton}" Content="{Binding Url}" Tag="{Binding Url}" Click="MediaUrl_Click"
-                                                        Visibility="{Binding Status, Converter={StaticResource fileStatusToVisibilityConverter}, ConverterParameter=Finished}"></Button>
+                                                        Visibility="{Binding Status, Converter={StaticResource fileStatusToVisibilityConverter}, ConverterParameter=Finished}">
+                                                    <Button.ContextMenu>
+                                                        <ContextMenu>
+                                                            <MenuItem Tag="{Binding Url}" Click="CopyUrl_Click" Header="Copy URL"></MenuItem>
+                                                        </ContextMenu>
+                                                    </Button.ContextMenu>
+                                                </Button>
                                             </StackPanel>
                                             <ProgressBar Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Minimum="0" Maximum="1" Value="{Binding Progress}"
                                                          Visibility="{Binding Status, Converter={StaticResource ResourceKey=fileStatusToVisibilityConverter}, ConverterParameter=!Finished}"

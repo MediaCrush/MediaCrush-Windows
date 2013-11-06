@@ -120,5 +120,10 @@ namespace MediaCrush
         {
             Process.Start((sender as Button).Tag as string);
         }
+
+        private void CopyUrl_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText((sender as MenuItem).Tag as string);
+        }
     }
 }
