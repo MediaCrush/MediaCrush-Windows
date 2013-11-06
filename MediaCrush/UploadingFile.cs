@@ -14,7 +14,7 @@ namespace MediaCrush
         {
             File = file;
             Status = FileStatus.Uploading;
-            Progress = 0.5;
+            Progress = 0;
         }
 
         public string File { get; set; }

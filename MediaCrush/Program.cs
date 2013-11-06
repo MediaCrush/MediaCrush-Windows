@@ -42,11 +42,16 @@ namespace MediaCrushWindows
 
         static void icon_Click(object sender, EventArgs e)
         {
-            if (UploadWindow != null)
+            if (UploadWindow == null)
+            {
+                UploadWindow = new UploadWindow();
+                UploadWindow.Show();
                 return;
-            UploadWindow = new UploadWindow();
-            UploadWindow.Closed += (s, f) => UploadWindow = null;
-            UploadWindow.Show();
+            }
+            if (UploadWindow.Visibility == System.Windows.Visibility.Visible)
+                UploadWindow.Visibility = System.Windows.Visibility.Hidden;
+            else
+                UploadWindow.Visibility = System.Windows.Visibility.Visible;
         }
 
         static void settings_Click(object sender, EventArgs e)

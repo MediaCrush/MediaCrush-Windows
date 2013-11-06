@@ -1,4 +1,5 @@
 ﻿using SharpCrush4;
+using SharpCrush4.Results;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -93,6 +94,12 @@ namespace MediaCrush
                 else
                 {
                     // Upload
+                    SharpCrush.UploadFileAsync(uploadingFile.File, (s, e) => uploadingFile.Progress = e.ProgressPercentage / 100.0, result =>
+                    {
+                        uploadingFile.Status = UploadingFile.FileStatus.Processing;
+                        while (SharpCrush.GetFileStatus(hash) == GetFileStatusResult.Processing) ;
+                        uploadingFile.Status = UploadingFile.FileStatus.Finished;
+                    });
                 }
             });
         }
