@@ -1,0 +1,21 @@
+﻿<Window x:Class="MediaCrush.ScreenCapture"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Screen Capture" AllowsTransparency="True" WindowStyle="None"
+        ShowInTaskbar="False" Topmost="True" Cursor="Cross"
+        MouseMove="Window_MouseMove" MouseDown="Window_MouseDown" MouseUp="Window_MouseUp">
+    <Canvas>
+        <Path Stroke="Black" Fill="Gray" Opacity="0.75">
+            <Path.Data>
+                <CombinedGeometry GeometryCombineMode="Exclude">
+                    <CombinedGeometry.Geometry1>
+                        <RectangleGeometry x:Name="backgroundRectangle" />
+                    </CombinedGeometry.Geometry1>
+                    <CombinedGeometry.Geometry2>
+                        <RectangleGeometry x:Name="foregroundRectangle" Rect="0,0,0,0" />
+                    </CombinedGeometry.Geometry2>
+                </CombinedGeometry>
+            </Path.Data>
+        </Path>
+    </Canvas>
+</Window>

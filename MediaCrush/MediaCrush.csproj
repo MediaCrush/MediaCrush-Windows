@@ -73,6 +73,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ScreenCapture.xaml.cs">
+      <DependentUpon>ScreenCapture.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UploadingFile.cs" />
     <Compile Include="UploadWindow.xaml.cs">
       <DependentUpon>UploadWindow.xaml</DependentUpon>
@@ -94,6 +97,10 @@
     <Resource Include="mediacrush.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ScreenCapture.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UploadWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

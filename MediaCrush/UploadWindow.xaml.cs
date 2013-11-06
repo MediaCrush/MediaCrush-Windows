@@ -55,7 +55,7 @@ namespace MediaCrush
 
         private void DismissButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Visibility = Visibility.Hidden;
         }
 
         private void UploadFile_MouseDown(object sender, MouseButtonEventArgs e)
@@ -72,7 +72,7 @@ namespace MediaCrush
             }
         }
 
-        private void UploadFile(string file)
+        public void UploadFile(string file)
         {
             // Modify UI
             if (FileList.Count == 0)

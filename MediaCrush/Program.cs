@@ -3,9 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Threading;
@@ -40,6 +43,11 @@ namespace MediaCrushWindows
 
             icon.Click += icon_Click;
 
+            UploadWindow = new UploadWindow();
+            UploadWindow.Visibility = System.Windows.Visibility.Hidden;
+            UploadWindow.Show();
+            UploadWindow.Visibility = System.Windows.Visibility.Hidden;
+
             Application.ApplicationExit += (s, e) => icon.Dispose();
             Application.Run();
             UnhookWindowsHookEx(_hookID);
@@ -47,12 +55,6 @@ namespace MediaCrushWindows
 
         static void icon_Click(object sender, EventArgs e)
         {
-            if (UploadWindow == null)
-            {
-                UploadWindow = new UploadWindow();
-                UploadWindow.Show();
-                return;
-            }
             if (UploadWindow.Visibility == System.Windows.Visibility.Visible)
                 UploadWindow.Visibility = System.Windows.Visibility.Hidden;
             else
@@ -62,6 +64,40 @@ namespace MediaCrushWindows
         static void settings_Click(object sender, EventArgs e)
         {
             throw new NotImplementedException();
+        }
+
+        private static void CaptureScreenshot()
+        {
+            Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
+            {
+                var screen = CaptureVirtualScreen(); // Capture the screen as it appears the moment they press the key combo
+                var tool = new ScreenCapture(screen);
+                if (tool.ShowDialog().GetValueOrDefault(true))
+                {
+                    var bitmap = new Bitmap((int)tool.Selection.Width, (int)tool.Selection.Height);
+                    int left = (int)tool.Selection.Left;
+                    int top = (int)tool.Selection.Top;
+                    using (var graphics = Graphics.FromImage(bitmap))
+                        graphics.DrawImage(screen, new Point(-left, -top));
+                    var file = Path.GetTempFileName() + ".png";
+                    bitmap.Save(file, ImageFormat.Png);
+                    UploadWindow.Visibility = System.Windows.Visibility.Visible;
+                    UploadWindow.UploadFile(file);
+                }
+            }));
+        }
+
+        private static Bitmap CaptureVirtualScreen()
+        {
+            int left = SystemInformation.VirtualScreen.Left;
+            int top = SystemInformation.VirtualScreen.Top;
+            int width = SystemInformation.VirtualScreen.Width;
+            int height = SystemInformation.VirtualScreen.Height;
+
+            var bitmap = new Bitmap(width, height);
+            using (var graphics = Graphics.FromImage(bitmap))
+                graphics.CopyFromScreen(left, top, 0, 0, bitmap.Size);
+            return bitmap;
         }
 
         private static bool ControlPressed = false;
@@ -80,9 +116,7 @@ namespace MediaCrushWindows
                     if (number == Keys.LControlKey || number == Keys.RControlKey || number == Keys.Control || number == Keys.ControlKey)
                         ControlPressed = false;
                     else if (number == Keys.PrintScreen && ControlPressed)
-                    {
-                        Task.Factory.StartNew(() => Dispatcher.CurrentDispatcher.Invoke(() => MessageBox.Show("Ctrl+PrintScreen pressed")));
-                    }
+                        CaptureScreenshot();
                 }
             }
             return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
