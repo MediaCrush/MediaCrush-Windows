@@ -1,6 +1,9 @@
-﻿using System;
+﻿using SharpCrush4;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -79,7 +82,36 @@ namespace MediaCrush
                 uploadingFilesContainer.Visibility = Visibility.Visible;
                 uploadingFiles.ItemsSource = FileList;
             }
-            FileList.Add(new UploadingFile(file));
+            var uploadingFile = new UploadingFile(file);
+            FileList.Add(uploadingFile);
+            Task.Factory.StartNew(() =>
+            {
+                var hash = SharpCrush.GetFileHash(File.ReadAllBytes(file));
+                uploadingFile.Hash = hash;
+                if (SharpCrush.GetFileExists(hash))
+                    uploadingFile.Status = UploadingFile.FileStatus.Finished;
+                else
+                {
+                    // Upload
+                }
+            });
+        }
+
+        private void MediaElement_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            (sender as MediaElement).Position = new TimeSpan(0, 0, 0, 0, 1);
+            (sender as MediaElement).Play();
+        }
+
+        private void MediaElement_Loaded(object sender, RoutedEventArgs e)
+        {
+            (sender as MediaElement).Position = TimeSpan.Zero;
+            (sender as MediaElement).Play();
+        }
+
+        private void MediaUrl_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start((sender as Button).Tag as string);
         }
     }
 }

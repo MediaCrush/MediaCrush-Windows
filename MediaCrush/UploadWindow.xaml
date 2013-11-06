@@ -9,6 +9,23 @@
         <ResourceDictionary>
             <mc_c:FileStatusToVisibilityConverter x:Key="fileStatusToVisibilityConverter"></mc_c:FileStatusToVisibilityConverter>
             <mc_c:FileStatusToBooleanConverter x:Key="fileStatusToBooleanConverter"></mc_c:FileStatusToBooleanConverter>
+            <Style x:Key="LinkButton" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <TextBlock TextDecorations="Underline">
+                            <ContentPresenter /></TextBlock>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Foreground" Value="Blue" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="true">
+                        <Setter Property="Foreground" Value="Red" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="Transparent">
@@ -54,15 +71,17 @@
                                                 <ColumnDefinition Width="200"></ColumnDefinition>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <MediaElement Source="{Binding File}" MaxHeight="113" MaxWidth="200" HorizontalAlignment="Left" Volume="0"></MediaElement>
-                                            <StackPanel Grid.Column="1">
+                                            <MediaElement LoadedBehavior="Manual" MaxHeight="113" MaxWidth="200" HorizontalAlignment="Left" Volume="0" Source="{Binding File}" MediaEnded="MediaElement_MediaEnded" Loaded="MediaElement_Loaded"></MediaElement>
+                                            <StackPanel Grid.Column="1" Margin="5 0 0 0">
                                                 <TextBlock FontSize="20" Text="{Binding FileName}" FontWeight="Bold"></TextBlock>
                                                 <TextBlock FontSize="16" Text="Uploading..."
-                                                           Visibility="{Binding Status, Converter={StaticResource ResourceKey=fileStatusToVisibilityConverter}, ConverterParameter=Uploading}"></TextBlock>
+                                                           Visibility="{Binding Status, Converter={StaticResource fileStatusToVisibilityConverter}, ConverterParameter=Uploading}"></TextBlock>
                                                 <TextBlock FontSize="16" Text="Processing... (this may take a while)"
-                                                           Visibility="{Binding Status, Converter={StaticResource ResourceKey=fileStatusToVisibilityConverter}, ConverterParameter=Processing}"></TextBlock>
+                                                           Visibility="{Binding Status, Converter={StaticResource fileStatusToVisibilityConverter}, ConverterParameter=Processing}"></TextBlock>
                                                 <TextBlock FontSize="16" Text="Upload complete!"
-                                                           Visibility="{Binding Status, Converter={StaticResource ResourceKey=fileStatusToVisibilityConverter}, ConverterParameter=Finished}"></TextBlock>
+                                                           Visibility="{Binding Status, Converter={StaticResource fileStatusToVisibilityConverter}, ConverterParameter=Finished}"></TextBlock>
+                                                <Button Style="{StaticResource LinkButton}" Content="{Binding Url}" Tag="{Binding Url}" Click="MediaUrl_Click"
+                                                        Visibility="{Binding Status, Converter={StaticResource fileStatusToVisibilityConverter}, ConverterParameter=Finished}"></Button>
                                             </StackPanel>
                                             <ProgressBar Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Minimum="0" Maximum="1" Value="{Binding Progress}"
                                                          Visibility="{Binding Status, Converter={StaticResource ResourceKey=fileStatusToVisibilityConverter}, ConverterParameter=!Finished}"

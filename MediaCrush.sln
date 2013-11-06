@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaCrush", "MediaCrush\MediaCrush.csproj", "{A921507B-E837-433F-8A61-74EB50E351AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpCrush 4", "externals\SharpCrush\SharpCrush 4\SharpCrush 4.csproj", "{D6D257A6-6E3B-4B24-9D02-FB0FECBD8245}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{A921507B-E837-433F-8A61-74EB50E351AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A921507B-E837-433F-8A61-74EB50E351AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A921507B-E837-433F-8A61-74EB50E351AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6D257A6-6E3B-4B24-9D02-FB0FECBD8245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6D257A6-6E3B-4B24-9D02-FB0FECBD8245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6D257A6-6E3B-4B24-9D02-FB0FECBD8245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6D257A6-6E3B-4B24-9D02-FB0FECBD8245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

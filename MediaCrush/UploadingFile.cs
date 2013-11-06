@@ -46,6 +46,26 @@ namespace MediaCrush
             }
         }
 
+        private string _Hash;
+        public string Hash
+        {
+            get { return _Hash; }
+            set
+            {
+                _Hash = value;
+                OnPropertyChanged("Hash");
+                OnPropertyChanged("Url");
+            }
+        }
+
+        public string Url
+        {
+            get
+            {
+                return "https://mediacru.sh/" + Hash;
+            }
+        }
+
         public enum FileStatus
         {
             Uploading,

@@ -107,6 +107,12 @@
     <Resource Include="Images\home-photo.png" />
     <Resource Include="Images\home-video.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\externals\SharpCrush\SharpCrush 4\SharpCrush 4.csproj">
+      <Project>{d6d257a6-6e3b-4b24-9d02-fb0fecbd8245}</Project>
+      <Name>SharpCrush 4</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
