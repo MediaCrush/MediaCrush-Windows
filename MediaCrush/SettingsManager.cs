@@ -36,6 +36,7 @@ namespace MediaCrush
         {
             EnableScreenCapture = true;
             EnableTracking = false;
+            CheckForUpdates = true;
             var sha1 = SHA1.Create();
             UserTrackingId = Convert.ToBase64String(sha1.ComputeHash(Guid.NewGuid().ToByteArray()));
         }
@@ -70,6 +71,17 @@ namespace MediaCrush
             {
                 _UserTrackingId = value;
                 OnPropertyChanged("TrackingUserId");
+            }
+        }
+
+        protected bool _CheckForUpdates;
+        public bool CheckForUpdates
+        {
+            get { return _CheckForUpdates; }
+            set
+            {
+                _CheckForUpdates = value;
+                OnPropertyChanged("CheckForUpdates");
             }
         }
 

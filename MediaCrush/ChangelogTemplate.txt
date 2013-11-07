@@ -1,0 +1,13 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<link href='//fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+		<style>
+			body {{ font-family: "Open Sans",sans-serif; }}
+		</style>
+	</head>
+	<body>
+		<h1>Update Details</h1>
+		{0}
+	</body>
+</html>

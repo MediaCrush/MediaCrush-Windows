@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Octokit</id>
+    <version>0.1.3</version>
+    <title>Octokit</title>
+    <authors>GitHub</authors>
+    <owners>GitHub</owners>
+    <licenseUrl>https://github.com/octokit/octokit.net/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/octokit/octokit.net</projectUrl>
+    <iconUrl>https://f.cloud.github.com/assets/19977/1441274/160fba8c-41a9-11e3-831d-61d88fa886f4.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An async-based GitHub API client library for .NET</description>
+    <summary>An async-based GitHub API client library for .NET</summary>
+    <releaseNotes>New Xamarin Component store versions of Octokit.net
+New clients for managing assignees, milestones, and tags
+New clients for managing issues, issue events, and issue comments
+New client for managing organization members
+Fixed bug in applying query parameters that could cause paging to continually request the same page</releaseNotes>
+    <copyright>Copyright GitHub 2013</copyright>
+    <language />
+    <tags>GitHub API Octokit</tags>
+    <references>
+      <reference file="Octokit.dll" />
+    </references>
+  </metadata>
+</package>

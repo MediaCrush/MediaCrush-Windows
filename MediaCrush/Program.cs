@@ -1,5 +1,6 @@
 ﻿using MediaCrush;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +8,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -19,8 +21,11 @@ namespace MediaCrush
     public static class Program
     {
         static UploadWindow UploadWindow;
+        static NotifyIcon NotifyIcon;
+        static MenuItem UpdateMenuItem;
+        static string UpdateUrl;
         public static SettingsManager SettingsManager;
-        public static readonly Version Version = new Version(1, 0, 0);
+        public static readonly Version Version = new Version(0, 0, 0);
 
         /// <summary>
         /// The main entry point for the application.
@@ -32,6 +37,8 @@ namespace MediaCrush
             SettingsManager = new SettingsManager();
             LoadSettings();
             SettingsManager.ForcePropertyUpdate();
+            if (SettingsManager.CheckForUpdates)
+                CheckForUpdates();
             // Note to people reading this source code: analytics is opt-in and no data is sent by calling this method unless users have done so
             Analytics.TrackFeatureUse("Application startup");
             const int minutesBetweenIdleUpdate = 5;
@@ -39,30 +46,72 @@ namespace MediaCrush
 
             _hookID = SetHook(_proc);
 
-            var icon = new NotifyIcon();
-            icon.Icon = Icon.ExtractAssociatedIcon(Assembly.GetEntryAssembly().Location);
-            icon.Visible = true;
-            icon.Text = "Click here to upload files to MediaCrush";
+            NotifyIcon = new NotifyIcon();
+            NotifyIcon.Icon = Icon.ExtractAssociatedIcon(Assembly.GetEntryAssembly().Location);
+            NotifyIcon.Visible = true;
+            NotifyIcon.Text = "Click here to upload files to MediaCrush";
 
             var menu = new ContextMenu();
+            UpdateMenuItem = new MenuItem("Update to ");
+            UpdateMenuItem.Visible = false;
             var settings = new MenuItem("Settings");
+            var source = new MenuItem("Source Code");
             var exit = new MenuItem("Exit");
+            menu.MenuItems.Add(UpdateMenuItem);
             menu.MenuItems.Add(settings);
+            menu.MenuItems.Add(source);
             menu.MenuItems.Add(exit);
+            UpdateMenuItem.Click += (s, e) => UpdateToVersion((Version)UpdateMenuItem.Tag, UpdateUrl);
+            source.Click += (s, e) => Process.Start("https://github.com/MediaCrush/MediaCrush-Windows");
             exit.Click += (s, e) => { Analytics.TrackFeatureUse("Manual shutdown"); Application.Exit(); };
             settings.Click += settings_Click;
-            icon.ContextMenu = menu;
+            NotifyIcon.ContextMenu = menu;
 
-            icon.Click += icon_Click;
+            NotifyIcon.Click += icon_Click;
 
             UploadWindow = new UploadWindow();
             UploadWindow.Visibility = System.Windows.Visibility.Hidden;
             UploadWindow.Show();
             UploadWindow.Visibility = System.Windows.Visibility.Hidden;
 
-            Application.ApplicationExit += (s, e) => icon.Dispose();
+            Application.ApplicationExit += (s, e) => NotifyIcon.Dispose();
             Application.Run();
             UnhookWindowsHookEx(_hookID);
+        }
+
+        private static void CheckForUpdates()
+        {
+            Task.Factory.StartNew(() =>
+            {
+                var json = JToken.Parse(new WebClient().DownloadString("https://mediacru.sh/static/windows.json"));
+                var latest = new Version(json["version"].Value<string>());
+                UpdateUrl = json["url"].Value<string>();
+                if (Version < latest)
+                {
+                    UpdateMenuItem.Text += latest;
+                    UpdateMenuItem.Visible = true;
+                    UpdateMenuItem.Tag = latest;
+                    NotifyIcon.BalloonTipClicked += (s, e) => UpdateToVersion(latest, UpdateUrl);
+                    NotifyIcon.ShowBalloonTip(5000, "Update Available", "An update is available. Click here for details.", ToolTipIcon.Info);
+                }
+            });
+        }
+
+        private static void UpdateToVersion(Version version, string update)
+        {
+            var details = new UpdateDetails(version);
+            if (details.ShowDialog().GetValueOrDefault(false))
+            {
+                // Download and install update
+                Task.Factory.StartNew(() =>
+                {
+                    var client = new WebClient();
+                    var temp = Path.GetTempFileName() + ".exe";
+                    client.DownloadFile(update, temp);
+                    Process.Start(temp);
+                    Application.Exit();
+                });
+            }
         }
 
         private static void LoadSettings()
