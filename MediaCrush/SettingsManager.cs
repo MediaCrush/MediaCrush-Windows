@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,6 +34,43 @@ namespace MediaCrush
 
         public void SetToDefaults()
         {
+            EnableScreenCapture = true;
+            EnableTracking = false;
+            var sha1 = SHA1.Create();
+            UserTrackingId = Convert.ToBase64String(sha1.ComputeHash(Guid.NewGuid().ToByteArray()));
+        }
+
+        protected bool _EnableScreenCapture;
+        public bool EnableScreenCapture
+        {
+            get { return _EnableScreenCapture; }
+            set
+            {
+                _EnableScreenCapture = value;
+                OnPropertyChanged("EnableScreenCapture");
+            }
+        }
+
+        protected bool _EnableTracking;
+        public bool EnableTracking
+        {
+            get { return _EnableTracking; }
+            set
+            {
+                _EnableTracking = value;
+                OnPropertyChanged("EnableTracking");
+            }
+        }
+
+        protected string _UserTrackingId;
+        public string UserTrackingId
+        {
+            get { return _UserTrackingId; }
+            set
+            {
+                _UserTrackingId = value;
+                OnPropertyChanged("TrackingUserId");
+            }
         }
 
         public void ForcePropertyUpdate()

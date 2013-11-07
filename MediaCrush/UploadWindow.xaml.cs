@@ -41,6 +41,8 @@ namespace MediaCrush
         {
             var data = e.Data.GetData(DataFormats.FileDrop);
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (files.Any())
+                Analytics.TrackFeatureUse("Drag and drop");
             foreach (var file in files)
                 UploadFile(file);
         }
@@ -66,6 +68,7 @@ namespace MediaCrush
             var result = dialog.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
+                Analytics.TrackFeatureUse("Dialog box upload");
                 // Upload files
                 foreach (var file in dialog.FileNames)
                     UploadFile(file);

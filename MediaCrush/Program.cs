@@ -14,12 +14,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Threading;
 
-namespace MediaCrushWindows
+namespace MediaCrush
 {
     public static class Program
     {
         static UploadWindow UploadWindow;
         public static SettingsManager SettingsManager;
+        public static readonly Version Version = new Version(1, 0, 0);
 
         /// <summary>
         /// The main entry point for the application.
@@ -31,6 +32,10 @@ namespace MediaCrushWindows
             SettingsManager = new SettingsManager();
             LoadSettings();
             SettingsManager.ForcePropertyUpdate();
+            // Note to people reading this source code: analytics is opt-in and no data is sent by calling this method unless users have done so
+            Analytics.TrackFeatureUse("Application startup");
+            const int minutesBetweenIdleUpdate = 5;
+            var timer = new System.Threading.Timer(o => Analytics.TrackFeatureUse("Idling"), null, minutesBetweenIdleUpdate * 60 * 1000, minutesBetweenIdleUpdate * 60 * 1000);
 
             _hookID = SetHook(_proc);
 
@@ -44,7 +49,7 @@ namespace MediaCrushWindows
             var exit = new MenuItem("Exit");
             menu.MenuItems.Add(settings);
             menu.MenuItems.Add(exit);
-            exit.Click += (s, e) => Application.Exit();
+            exit.Click += (s, e) => { Analytics.TrackFeatureUse("Manual shutdown"); Application.Exit(); };
             settings.Click += settings_Click;
             icon.ContextMenu = menu;
 
@@ -110,6 +115,7 @@ namespace MediaCrushWindows
 
         private static void CaptureScreenshot()
         {
+            Analytics.TrackFeatureUse("Screenshot");
             UploadWindow.Dispatcher.Invoke(new Action(() =>
             {
                 var screen = CaptureVirtualScreen(); // Capture the screen as it appears the moment they press the key combo
@@ -145,6 +151,8 @@ namespace MediaCrushWindows
         private static bool ControlPressed = false;
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) 
         {
+            if (!SettingsManager.EnableScreenCapture)
+                return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
             if (nCode >= 0)
             {
                 Keys number = (Keys)Marshal.ReadInt32(lParam);
