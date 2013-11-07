@@ -131,6 +131,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\EmbedAssembly\bin\Debug\EmbedAssembly.exe">
+      <Link>ToCopy\EmbedAssembly.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\EmbedAssembly\bin\Debug\Mono.Cecil.dll">
+      <Link>ToCopy\Mono.Cecil.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\MediaCrush\bin\Debug\MarkdownSharp.dll">
       <Link>ToCopy\MarkdownSharp.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -151,10 +159,14 @@
       <Link>ToCopy\SharpCrush4.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\Uninstaller\bin\Debug\Uninstaller.exe">
+      <Link>ToCopy\Uninstaller.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(TargetDir)ToCopy\Patchy.PostBuild.EmbedAssembly.exe Installer.exe ToCopy\MonoTorrent.dll ToCopy\Mono.Nat.dll ToCopy\MonoTorrent.Dht.dll ToCopy\StarksoftBiko.dll ToCopy\Newtonsoft.Json.dll ToCopy\Patchy.exe ToCopy\Uninstaller.exe ToCopy\Xceed.Wpf.Toolkit.dll</PostBuildEvent>
+    <PostBuildEvent>$(TargetDir)ToCopy\EmbedAssembly.exe Installer.exe ToCopy\MarkdownSharp.dll ToCopy\Newtonsoft.Json.dll ToCopy\Octokit.dll ToCopy\SharpCrush4.dll ToCopy\MediaCrush.exe ToCopy\Uninstaller.exe</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
