@@ -42,6 +42,13 @@ namespace Installer
 
             var stream = GetEmbeddedResource(path);
             if (stream == null)
+            {
+                path = assemblyName.Name + ".exe";
+                if (assemblyName.CultureInfo.Equals(CultureInfo.InvariantCulture) == false)
+                    path = String.Format(@"{0}\{1}", assemblyName.CultureInfo, path);
+                stream = GetEmbeddedResource(path);
+            }
+            if (stream == null)
                 return null;
 
             var assemblyRawBytes = new byte[stream.Length];
