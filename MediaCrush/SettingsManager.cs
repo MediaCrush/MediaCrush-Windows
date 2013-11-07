@@ -37,6 +37,7 @@ namespace MediaCrush
             EnableScreenCapture = true;
             EnableTracking = false;
             CheckForUpdates = true;
+            RunOnStartup = true;
             var sha1 = SHA1.Create();
             UserTrackingId = Convert.ToBase64String(sha1.ComputeHash(Guid.NewGuid().ToByteArray()));
         }
@@ -82,6 +83,17 @@ namespace MediaCrush
             {
                 _CheckForUpdates = value;
                 OnPropertyChanged("CheckForUpdates");
+            }
+        }
+
+        protected bool _RunOnStartup;
+        public bool RunOnStartup
+        {
+            get { return _RunOnStartup; }
+            set
+            {
+                _RunOnStartup = value;
+                OnPropertyChanged("RunOnStartup");
             }
         }
 

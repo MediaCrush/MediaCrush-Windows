@@ -1,0 +1,115 @@
+﻿<Window x:Class="Installer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MediaCrush Installer" Icon="Images/mediacrush.ico" Height="500" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Image Source="Images/mediacrush.png" Grid.RowSpan="2" Width="70" Height="70"></Image>
+            <TextBlock FontSize="18" Grid.Column="1">MediaCrush</TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="1">The official Windows app for uploading files to MediaCrush</TextBlock>
+        </Grid>
+        <TabControl Grid.Row="1" x:Name="progressTabs" BorderThickness="0" Background="Transparent">
+            <TabItem Visibility="Collapsed"> <!--Step one, agree to terms-->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock>This installer will walk you through the process of installing MediaCrush.</TextBlock>
+                    <TextBlock Grid.Row="1" HorizontalAlignment="Stretch" TextWrapping="Wrap">MediaCrush is free and open source, distributed under the terms of
+                        the MIT license, shown below. If you agree to these terms (they're not so bad), click "Next" to begin the install.</TextBlock>
+                    <TextBox Height="150" Grid.Row="2" x:Name="licenseText" TextWrapping="Wrap"></TextBox>
+                    <Button Content="Browse source code" Cursor="Hand" Grid.Row="3" Click="browseSourceClick">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <TextBlock TextDecorations="Underline">
+                                    <ContentPresenter />
+                                </TextBlock>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Foreground" Value="Blue" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="true">
+                                        <Setter Property="Foreground" Value="Red" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </TabItem>
+            <TabItem Visibility="Collapsed"> <!--Step two, install location-->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock TextWrapping="Wrap" Grid.ColumnSpan="2">Please select a location to install MediaCrush to:</TextBlock>
+                    <TextBox Grid.Row="1" x:Name="installPathTextBox"></TextBox>
+                    <Button Grid.Column="1" Grid.Row="1" Width="20" Click="browseInstallLocationClick">...</Button>
+                    <TextBlock Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="Wrap">If you're installing an update, this should be set to the current install location. Leave it so.</TextBlock>
+                </Grid>
+            </TabItem>
+            <TabItem Visibility="Collapsed"><!--Step three, additional options-->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock FontSize="16">Additional Options</TextBlock>
+                    <CheckBox x:Name="startWithWindowsCheckBox" Grid.Row="1" IsChecked="True">Start MediaCrush when Windows starts</CheckBox>
+                    <CheckBox x:Name="addToStartMenuCheckBox" Grid.Row="2" IsChecked="True">Add MediaCrush to the Start Menu</CheckBox>
+                </Grid>
+            </TabItem>
+            <TabItem Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock TextWrapping="Wrap">We would like to send some information about how you use this application to Google Analytics. This information allows us to learn more about how people
+                    use the application. It is completely anonymous. We will, for example, make a note of it when you upload a file, so we know how often people are uploading files. We will not, however,
+                    keep track of which files you've uploaded - just the fact that someone, somewhere, uploaded a file through the app. If you're cool with that, please enable analytics:</TextBlock>
+                    <CheckBox x:Name="enableTrackingCheckBox" Grid.Row="1" IsChecked="False">Yes, enable analytics</CheckBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" Width="100" Margin="3" IsEnabled="False" x:Name="previousButton" Click="previousButtonClick">Previous</Button>
+            <Button Grid.Column="2" Width="100" Margin="3" x:Name="nextButton" Click="nextButtonClick">Next</Button>
+        </Grid>
+    </Grid>
+</Window>

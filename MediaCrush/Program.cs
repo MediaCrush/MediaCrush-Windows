@@ -25,18 +25,32 @@ namespace MediaCrush
         static MenuItem UpdateMenuItem;
         static string UpdateUrl;
         public static SettingsManager SettingsManager;
-        public static readonly Version Version = new Version(0, 0, 0);
+        public static readonly Version Version = new Version(1, 0, 0);
 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             SettingsManager.Initialize();
             SettingsManager = new SettingsManager();
             LoadSettings();
             SettingsManager.ForcePropertyUpdate();
+
+            bool firstRun = false, startup = false;
+            foreach (var arg in args)
+            {
+                if (arg == "--startup")
+                {
+                    if (!SettingsManager.RunOnStartup)
+                        return;
+                    startup = true;
+                }
+                if (arg == "--firstrun")
+                    firstRun = true;
+            }
+
             if (SettingsManager.CheckForUpdates)
                 CheckForUpdates();
             // Note to people reading this source code: analytics is opt-in and no data is sent by calling this method unless users have done so
@@ -58,7 +72,7 @@ namespace MediaCrush
             var source = new MenuItem("Source Code");
             var exit = new MenuItem("Exit");
             menu.MenuItems.Add(UpdateMenuItem);
-            menu.MenuItems.Add(settings);
+            //menu.MenuItems.Add(settings);
             menu.MenuItems.Add(source);
             menu.MenuItems.Add(exit);
             UpdateMenuItem.Click += (s, e) => UpdateToVersion((Version)UpdateMenuItem.Tag, UpdateUrl);
@@ -70,9 +84,9 @@ namespace MediaCrush
             NotifyIcon.Click += icon_Click;
 
             UploadWindow = new UploadWindow();
-            UploadWindow.Visibility = System.Windows.Visibility.Hidden;
             UploadWindow.Show();
-            UploadWindow.Visibility = System.Windows.Visibility.Hidden;
+            if (startup)
+                UploadWindow.Visibility = System.Windows.Visibility.Hidden;
 
             Application.ApplicationExit += (s, e) => NotifyIcon.Dispose();
             Application.Run();
@@ -114,7 +128,7 @@ namespace MediaCrush
             }
         }
 
-        private static void LoadSettings()
+        public static void LoadSettings()
         {
             if (!File.Exists(SettingsManager.SettingsFile))
             {
@@ -141,7 +155,7 @@ namespace MediaCrush
             }
         }
 
-        private static void SaveSettings()
+        public static void SaveSettings()
         {
             var serializer = new JsonSerializer();
             serializer.Formatting = Formatting.Indented;
