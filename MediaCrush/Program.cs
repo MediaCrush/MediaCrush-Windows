@@ -1,4 +1,5 @@
 ﻿using MediaCrush;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,9 +16,10 @@ using System.Windows.Threading;
 
 namespace MediaCrushWindows
 {
-    static class Program
+    public static class Program
     {
         static UploadWindow UploadWindow;
+        public static SettingsManager SettingsManager;
 
         /// <summary>
         /// The main entry point for the application.
@@ -25,6 +27,11 @@ namespace MediaCrushWindows
         [STAThread]
         static void Main()
         {
+            SettingsManager.Initialize();
+            SettingsManager = new SettingsManager();
+            LoadSettings();
+            SettingsManager.ForcePropertyUpdate();
+
             _hookID = SetHook(_proc);
 
             var icon = new NotifyIcon();
@@ -51,6 +58,41 @@ namespace MediaCrushWindows
             Application.ApplicationExit += (s, e) => icon.Dispose();
             Application.Run();
             UnhookWindowsHookEx(_hookID);
+        }
+
+        private static void LoadSettings()
+        {
+            if (!File.Exists(SettingsManager.SettingsFile))
+            {
+                SettingsManager.SetToDefaults();
+                SaveSettings();
+            }
+            else
+            {
+                var serializer = new JsonSerializer();
+                serializer.Formatting = Formatting.Indented;
+                serializer.MissingMemberHandling = MissingMemberHandling.Ignore;
+                try
+                {
+                    using (var reader = new StreamReader(SettingsManager.SettingsFile))
+                        serializer.Populate(reader, SettingsManager);
+                }
+                catch
+                {
+                    System.Windows.MessageBox.Show("Your settings are corrupted. They have been reset to the defaults.",
+                        "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    SettingsManager.SetToDefaults();
+                    SaveSettings();
+                }
+            }
+        }
+
+        private static void SaveSettings()
+        {
+            var serializer = new JsonSerializer();
+            serializer.Formatting = Formatting.Indented;
+            using (var writer = new StreamWriter(SettingsManager.SettingsFile))
+                serializer.Serialize(writer, SettingsManager);
         }
 
         static void icon_Click(object sender, EventArgs e)
