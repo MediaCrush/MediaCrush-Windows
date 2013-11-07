@@ -39,7 +39,10 @@
                         <RowDefinition Height="1*" x:Name="rowCollapse2"></RowDefinition>
                         <RowDefinition Height="0" x:Name="rowExpand"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Cursor="Hand" MouseDown="UploadFile_MouseDown" Margin="0 0 0 30" VerticalAlignment="Bottom" FontSize="18" Foreground="#005483" TextAlignment="Center">Drag and drop or click to upload</TextBlock>
+                    <StackPanel Margin="0 0 0 30" VerticalAlignment="Bottom">
+                        <TextBlock Cursor="Hand" MouseDown="UploadFile_MouseDown" FontSize="18" Foreground="#005483" TextAlignment="Center">Drag and drop or click to upload</TextBlock>
+                        <TextBlock Cursor="Hand" MouseDown="UploadFile_MouseDown" FontSize="14" Foreground="#005483" TextAlignment="Center">Or press "Ctrl+PrintScreen" any time to take a screenshot</TextBlock>
+                    </StackPanel>
                     <Image Grid.Row="1" Source="Images/upload.png"></Image>
                     <Grid Grid.Row="2" Margin="0 30 0 0">
                         <Grid.ColumnDefinitions>
