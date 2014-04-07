@@ -28,6 +28,10 @@ namespace Installer
     {
         public MainWindow()
         {
+            if (App.IsShutdown)
+            {
+                return;
+            }
             SettingsManager.Initialize();
             Program.SettingsManager = new SettingsManager();
             Program.LoadSettings();
