@@ -19,6 +19,8 @@ namespace Installer
     /// </summary>
     public partial class App : Application
     {
+        public static bool IsShutdown { get; private set; }
+
         public static Stream GetEmbeddedResource(string name)
         {
             var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
@@ -63,6 +65,7 @@ namespace Installer
             // Check for permissions
             if (!UacHelper.IsProcessElevated && !Debugger.IsAttached)
             {
+                IsShutdown = true;
                 var info = new ProcessStartInfo(Assembly.GetEntryAssembly().Location);
                 info.Verb = "runas";
                 Process.Start(info);
